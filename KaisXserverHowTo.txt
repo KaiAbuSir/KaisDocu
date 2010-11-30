@@ -1,0 +1,182 @@
+Remote Desktop Möglichkeiten für Linux:
+
+Verschiedene Möglichkeiten, einen auf einem entfernten host laufenden LINUX desktop lokal zu benutzen:
+- Verschiedene VNC Server
+- XServer
+Ziel: im LAN (Gigabit) soll der Desktop so flüssig zu bedienen sein, als wenn alles lokal läuft
+
+Allgemeine Vorbereitungen: 
+====================
+
+Für alle folgenden Remote Desktops sollten folgende Bedingungen erfüllt sein:
+
+1) Firewalls: Abschalten oder anpassen (wir sind ja im sicheren LAN)
+1a) Ubuntu: Firewall ist ein cli-app - also mit: "sudo ufw status verbose" prüfen - per default disabled :-)
+1b) SuSE: Firewall über YaST disablen oder configuriren (per default enabled !)
+   darauf achten ,dass er auch beim Neustart disabled bleibt
+
+2) sshd (openssh-server) muss natürlich auf remote host laufen
+2a) Ubuntu: per default nicht installiert -> nachinstallieren
+(Hint: das geht nur mit Synaptic, Aptitude, aber nicht mit "Applications->Add/Remove")
+
+3) Kontrolle der ssh-server parameter in /etc/ssh/sshd-config (auf remote Rechner)
+3a) "X11Forwarding yes" oder "ForwardX11 yes" -> dann sollte man auf die "-X" option verzichten können
+3b) "/etc/init.d/ssh restart" , damit config neu eingelesen wird
+
+4) Der lokale Server darf nicht mit " -nolisten tcp" gestarted worden sein
+
+5) xhosts + oder xhosts <remote host> (unsicher, aber im LAN ok)
+
+
+Altmodisch: Einzelne App Lokal anzeigen (mittel X11)
+=======================================
+
+1) über ssh am entfernten Rechner mit -X einloggen (bzw "X11Forwarding" opt. setzen, siehe oben)
+1a) "ssh -X <remote host>"
+1b) oder, falls lokaler login name != entfernter name: "ssh -X -l <loginname> <remote host>"
+
+2) ggf. in der ssh, also auf entferntem Rechner, Display für den lokalen Rechner setzen:
+"export DISPLAY=<lokalerRechner>:0"  (sofern das die ssh nicht autmatisch macht)
+
+3) dann kann man die X-apps starten, ohne jedesmal das display zu setzen
+
+Nachteile:
+- Leider kann man die apps so ja nur über die Kommandozeile starten :-(
+- Man hat die Desktop Toolbars ... nicht zur Verfügung
+Vorteil: schnell
+
+Ganzen Desktop über X11 Lokal anzeigen (ohne VNC)
+=======================================
+
+Der Desktop ist ja auch nur eine Anwendung, die von einem anderen XServer angezeigt werden kann.
+
+Voraussetzungen:
+Ein XServer muss lokal laufen, und auf dem remote host mindestens der X Display Manager xdm (normalerweise laeuft dort aber auch ein XServer)
+
+Problem:
+gnome und KDE haben einen eigenen Display Manager.
+Und leider kann man eine display manager nur einmal pro X-Server starten! ("Es kann nur einen geben")
+Wenn also schon ein ein Desktop lokal laeuft (eigentlich immer der Fall), dann kann kein 2ter starten.
+Lösung: Mehrere XServer parallel laufen lassen!
+
+1) Zweiten XServer auf lokal starten:
+1a) In eine "richtige" Konsole wechseln (tty) z.B: "ctrl-alt-F2" und XServer mit ANDEREM Display starten, z.B:
+"X :1 & "
+Der standard XServer läuft ja meist auf "F7", dieser neue läuft dann auf "F9"
+
+2) Lokal ein xterm im neuen XServer starten, also auf "ctrl-alt-F2", oder irgendow, dann aber mit Display Angabe:
+"xterm -display :1 &"
+
+3) auf DIESEM xterm, also auf dem Display-2-XServer, in den entfernten Rechner einloggen. z.B:
+"ssh -X <username>@<remote-host-ip>"
+
+4) über diese ssh auf dem remote-host einen Desktop starten:
+Dazu muss man das jeweilige "launcher" Programm des Desktops kennen:
+- bei KDE4  "startkde"
+- bei KDE3: "kde"
+4a) Hint: "startx" geht natürlich nicht, denn dadurch würde ja NOCH ein XServer gestarted werden
+
+5) Beenden:
+Dazu schiesst man den XServer einfach ab, und exit aus der Konsole
+
+Vorteile:
+X11 ist über ein LAN recht schnell, schneller als VNC, vielleicht sogar schneller als auf dem remote-host selbst, denn:
+Die Grafikbeschleunigung findet lokal statt (oder???) und der remote-host (== server) hat meist schlecht Grafikkarte
+
+Nachteile:
+- Wenn der 2. lokale X-Server weg ist, sind auch alle Apps weg, obwohl der entfernte ja Rechner weiterlaeuft.
+- Komischerweise starten nicht alle Teile des Desktops (KDE4), manchmal fehlen Icons, oder Teile davon
+
+
+Physikalischen Desktop Lokal anzeigen (mit VNC):
+=====================================
+
+D.h: Man will den "richtigen" KDE/gnome Desktop anzeigen, also das, was auf dem Display des remote Rechners gerade angezeigt wird. 
+(auch nützlich für remote Hilfe)
+
+Nicht jeder vncserver kann das- mögich mit:
+- x11vnc
+- KDE desktop sharing
+
+KDE Desktop sharing:
+-----------------------------
+
+1) Aktivierung über Config-Tool der Distribution, z.B: "YaST -> Network Services -> Remote Administration ..." oder wie auch immer
+
+2) Bei SuSE: "Application->System->Remote Access->Desktop Sharing" 
+Hier kann man VNC so configurieren, dass man OHNE Einladung und OHNE Passwort den Desktop übernehmen kann 
+
+3) Jetzt kann man mit jedem VNC Viewer den desktop Bedienen z.B: gnome - "Remote Desktop Viewer"
+
+Nachteile:
+- auch über Gigabit LAN recht langsam
+- ausserdem gibt es bei  mir noch Tastatur Probleme -> Laaaangsaaaaam tippen! :-(
+Hint: Es werden die standard VNC Ports Verwendet: also 5900 ...
+
+
+x11vnc Desktop sharing:
+--------------------------------
+
+Dies ist ein spezieller VNC Server, nur zum Anzeigen des physikalischen Desktops, siehe: www.karlrunge.com/x11vnc
+
+1) auf entferntem host x11vnc starten mit: "x11vnc -display:0"  (sofern Display=0 der Destop ist)
+1a) x11vnc macht dann ein paar Messages, u.A zeigt er die port-number an (normalerweise 5900)
+1b) den x11vnc kann man natürlich auch remote per ssh starten
+
+Auch hier kann man mit jedem normalen VNC Viewer zugreifen, es ist ja ganz normales vnc
+
+Nachteile:
+Recht langsam auch im GBit LAN !
+
+
+Virtuellen Desktop lokal anzeigen (mit VNC):
+================================
+
+Dazu wird auf dem remote Rechner ein "richtiger" vncserver gestarted, der wiederum einen EIGENEN XServer started. Der Desktop ist aber NUR ueber vnc-clients zu sehen!
+
+1) ggf: im home-Verzeichniss das script .vnc/xstartup editieren: windows manager eintrag ggf aendern:
+- SuSE benutzt per default den twm - funktioniert, aber kann gar nix - und: very ugly
+- startkde (KDE4)  - macht faxen und bricht beim starten ab  :-(  weiss noch nicht warum
+- gnome - funktioniert, started aber ohne toolbar, nur als window manager :-(
+- xterm starten, dann gnome starten: funktioniert auch ,aber mit Problemen (beim SuSE 11 server):
+--> Einige Fenster (YaST) starten auf display:0 und nicht im vnc-display
+--> kein Fullscreen mit tightVNCviewer möglich
+-- Screen Resolution kann nicht geändert werden, um sie an die Reslution des viewers anzupassen
+
+2) starten des vnc-servers auf dem remote host, mit :
+"vncserver"
+Nur beim 1. start muss man noch ein vnc-passwort eingeben, das spaeter wieder benutzt wird!
+Man kann "vncserver" beliebig oft starten, er sucht immer den nächsten freien port:
+5901,5902,5903 ... und überspringt ports, falls da schon was läuft
+
+2a) Nützliche optionen von vncsserver:
+"vncserver -geometry 1000x700 : 9" Started auf display 9, d.h: port 5909, mit angegebener Auflösung
+
+3) Nun den vnc-viewer starten z.B: xtightvncviewer (bei linux mal wieder nur über konsole) und verbinden: z.B: 192.168.1.11:5909 (port = 5900 + displayNummer)
+
+4) Beenden des vncservers auf remote-host:
+vncserver kill :<displayNummer>
+
+
+Virtuellen KDE-Desktop lokal anzeigen (mit Xvnc):
+====================================
+
+Bei SuSE KDE4 sind 3 virtuelle KDE -VNC server services vorkonfiguriert: vnc1,vnc2,vnc3
+Das setup kann man einsehen/ändern unter:
+"/etc/init.d/vnc"
+Die Auflösung ist vorgegeben, auch die Ports (5901-5903)
+
+Diese VNC Server werden bei Bedarf, also wenn man sich mit einem VNC-Viewer auf die ports connected (vom xinetd ???) automatisch gestarted.
+-> Daher sollte man keinen anderen VNC Server auf diesen Ports starten
+
+Vorteil:
+-X11 läuft auf dem Server -> wenn man den VNC Client zumacht, laufen die apps weiter!
+- Alles schon schön vorconfiguriert
+Vor/Nachteil:
+Im LAN nicht so schnell wie X11, aber schneller als andere VNC Server
+
+
+Zusammenfassung:
+===============
+
+Am coolsten und schnellsten ist der Desktop mit dem 2. lokalen XServer
