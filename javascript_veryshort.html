@@ -1,0 +1,199 @@
+<html>
+<head>
+<title>JS Very Short</title>
+<style>h2 {color:red} </style>
+</head>
+<body>
+
+<p>This is a VERY short description of JavaScript </p>
+
+
+<h2>Basics</h2>
+Basic syntax is similar to c/c++ <br>
+except: variable declaration, classes and scopes!
+<h3>Case Sensitivity </h3>
+<p>Everything is case sensitive! (variables, reserved words and functions) like c/c++ - but unlike html!</p>
+
+<h3>Comments</h3>
+<p>Same like c++ means: "//" and "/* */" can be used  </p>
+
+<h3>Literals</h3>
+<p>0, null, false, undefined, "" All menans false <br>
+Strings must be enclosed in "" or ''
+</p>
+
+<h3>Statement Separators and Blocks ; {} </h3>
+<p>Semikolons MUST be used to separate statements in SAME line <br>
+But: The interpreter add semicolon at the end of each line, mostly. </p>
+<p>Blocks are enclosed in { } like c/c++</p>
+
+<h3>Reserved Words</h3>
+<p> More or less the same as c++, but many of them yet unused. </p>
+
+<h3>Variables and Arrays</h3>
+<p>Keyword "var" is not necessary, but nicer, type is detected automatically (and may change when value is assigned):
+<pre>myNewVar = "ich bins"
+var otherNewVar = true;</pre>
+Types in arrays can be mixed:
+<pre>var myAry = [1,2,"kai",3,true,33]; </pre> 
+ </p>
+ 
+ <h3>Exceptions</h3>
+ <p>Exceptions are like c++ using try{} throw() catch(){} finally{} <br>
+ finally is optional, does not mean catch(...) , but is executed even if nothing is thrown!</p>
+ 
+<h2>Expressions</h2>
+
+<h3>Comparison == === != !== </h3>
+<p>== and != compare the value <br>
+=== and !== compare value and datatype </p>
+
+<h2>Functions</h2>
+<h3>General:</h3>
+<ul>
+<li>Functions are Objects and can HAVE methods.</li>
+<li>But: Functions can BE methods, too!</li>
+<li>Functions can have inner Functions</li>
+</ul>
+
+<h3>Function definitions and Parameters </h3>
+
+<p><pre>
+function myNewFunc(par1){
+console.log(par1 + arguments[1]);
+} </pre><br>
+functions always return a value. This may be "undefined"<br>
+Parameters are stored in "arguments"-array, Paramter list is just for convenience! 
+</p>
+<h3>Context Binding of functions - call() and apply()</h3>
+<p>The context can be any object, default is the global object<br>
+The first keyword is always the context-object<br>
+the this-pointer of a function then points to the contex-object:
+<pre
+
+</pre>
+</p>
+<h3>Self Invoked Functions </h3>
+<p>Self-invoking Functions have 2 pair of extra brackets:
+<pre>(function() {console.log("executed immediately);})();</pre>
+</p>
+<h3>Closures and Anonymous Functions (Function Expressions)</h3>
+<p>Anonymous methods have no name, and are often used as inner functions:
+<pre>
+function outerFunc() {
+  var cnt = 0;
+  return function() {console.log("innerFunc: " +cnt++);};
+}
+</pre>
+<p>Inner Functions can access the local Variables of outer Functions<br>
+Even if only the inner Function is called, independently of the outer Function, it still has access to the local variable 
+</p>
+
+<h2>Objects</h2>
+
+<h3>No Classes needed </h3>
+<p>In JavaScript, there is no need to define a class bevor using an instance. <br>
+You can just create an Object, and then add properties, which can be variables and funtions </p>
+
+<h3>Object Creation</h3>
+<p>
+Object literal - with 2 properties: 
+<pre>myObject = {index1:'val1', index2:'val2'} </pre> 
+Object created with constructor function - with no properties: 
+<pre>var myObjectNo2 = new Object();</pre>
+Custom constructor function:
+<pre>function MyObject(attrA, attrB) { this.attrA = attrA; this.attrB = attrB;}
+var myObj = new MyObject("red", "solid");</pre>
+</p>
+<p>Properties can be added or removed to a single Instance AFTER creation of the Instance:
+<pre>myObj.attrC = "Kai";<br>
+delete myObj.attrC; </pre>
+
+<h3>Iterating over Properties</h3>
+<p><pre>
+for (var blabla in myObj) {
+console.log("property name: " + blabla + " value: " +myObj[blabla];
+}
+</pre>
+Since Arrays are Objects, too, for/in loops can be used to iterate over all values of an array, too!
+</p>
+
+<h3>Functions as Methods</h3>
+<p>Methods are just functions that are a property of an Object</p>
+<p> When a function is called as method (using the . or [ ] operator), the context (means: the "this") will be the instance of the object.</p>
+<pre>function MyObject(attrA) { 
+    this.attrA = attrA; 
+    this.methB = function() {return 100 +attrA;}
+}</pre>
+
+<h3>Prototypes</h3>
+<p>Prototypes are added to EXISTING classes using the "prototype" method:  </p>
+<pre>
+var Jedi = function(name) {this.name = name;};
+Jedi.prototype{
+theForce : "strong",
+lightSaber : function(){console.log("SchrrrrummmKaputtt")};
+};
+kai = new Jedi("Mohandis");
+kai.merkmal = "gutaussehend"; //true for kai only, not for other Jedi
+</pre>
+<h3>Inheritance</h3>
+<p>Simply add the Base class as prototype to the derived Class:<br>
+<pre>
+function Base() {
+  this.anOverride = function() {alert("Base::anOverride()");};
+  this.aBaseFunction = function() {alert("Base::aBaseFunction()");};
+}
+function Derive() {
+  this.anOverride = function() {alert("Derive::anOverride()");};
+}
+ 
+base = new Base();
+Derive.prototype = base; // Must be before new Derive()
+d = new Derive(); // Copies Derive.prototype to d instance's hidden prototype slot.
+</pre>
+</p>
+
+<h3>The Global Object</h3>
+<p>
+In a browser, the Global Object is the window-object <br>
+Global Variables are properties of the Global Object <br>
+Global Functions are methods of the Global Object <br>
+
+</p>
+
+<h2>Scopes, Namespaces, Visibility</h2>
+<p>There are no real Namespaces in JavaScript, and {blablaBlock} cannot be used link in c/c++ to declare Varibles only visible in this block</p>
+<p>If necessarry, all variables and functions can be made properties of a uniquely named object. For example, an object named after the URL of a webite</p>
+
+<h2>JavaScript and HTML</h2>
+
+<h3>Embedding in HTML</h3>
+<p><pre>
+&#60;script type="text/javascript"> blablablalba-script; &#60;/scrip><br>
+&#60;noscript>blablabla-HTMLstattScript &#60;/noscript>
+</pre>
+Or, externel javaScript Files can be used:<br>
+<pre>&#60;script type="text/javascript" src="hello.js">&#60;/script></pre>
+</p>
+<p>Scrips should be included at the end of the html-body because: The page will be displayed faster, and the DOM will be complete</p>
+
+<h3>DOM of the HTML doc </h3>
+<p>The DOM is created by the browser, it is not part of the JavaScript standard</p>
+<ul>
+<li>For every HTML Element, there is a node in the DOM
+<li>The nodeName property of a Node is the HTML-TagName
+<li>The root element: document.documentElement is the &#60;html>&#60;/html> part
+<li>Attributes of an HTML-tag are properties of the corresponding DOM-node
+</ul>
+
+<h3>Events - Event Handlers</h3>
+<p>Events are handled by normal funktions
+Most important events are mouse-events. the event-handler function is simply assigned to DOM-node event-attribute:
+<pre>
+function mouseEvtHndl() {alert(this.href);}
+var firstLink = document.getElementsByTagName("a")[0];
+firstLink.onclick = mouseEvtHndl;
+</pre>
+</body>
+</html>
