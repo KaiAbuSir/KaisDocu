@@ -12,7 +12,7 @@
 Basic syntax is similar to c/c++ <br>
 except: variable declaration, classes and scopes!
 <h3>Case Sensitivity </h3>
-<p>Everything is case sensitive! (variables, reserved words and functions) like c/c++ - but unlike html!</p>
+<p>Everything is case sensitive! (variables, reserved words and functions) like c/c++ - but unlike HTML!</p>
 
 <h3>Comments</h3>
 <p>Same like c++ means: "//" and "/* */" can be used  </p>
@@ -33,11 +33,14 @@ But: The interpreter add semicolon at the end of each line, mostly. </p>
 <h3>Variables and Arrays</h3>
 <p>Keyword "var" is not necessary, but nicer, type is detected automatically (and may change when value is assigned):
 <pre>myNewVar = "ich bins"
-var otherNewVar = true;</pre>
+var otherNewVar = true
+otherNewVar = function(){};</pre>
 Types in arrays can be mixed:
 <pre>var myAry = [1,2,"kai",3,true,33]; </pre> 
  </p>
- 
+ <p>current type can be detected by typeof:
+ <pre>var bla; typeof(bla); </pre>
+ return value of typeof() may be "undefined","number","string","boolean","object","function"</p>
  <h3>Exceptions</h3>
  <p>Exceptions are like c++ using try{} throw() catch(){} finally{} <br>
  finally is optional, does not mean catch(...) , but is executed even if nothing is thrown!</p>
@@ -112,7 +115,7 @@ delete myObj.attrC; </pre>
 <h3>Iterating over Properties</h3>
 <p><pre>
 for (var blabla in myObj) {
-console.log("property name: " + blabla + " value: " +myObj[blabla];
+console.log("property name: " + blabla + " value: " +myObj[blabla]);
 }
 </pre>
 Since Arrays are Objects, too, for/in loops can be used to iterate over all values of an array, too!
@@ -130,12 +133,13 @@ Since Arrays are Objects, too, for/in loops can be used to iterate over all valu
 <p>Prototypes are added to EXISTING classes using the "prototype" method:  </p>
 <pre>
 var Jedi = function(name) {this.name = name;};
-Jedi.prototype{
-theForce : "strong",
-lightSaber : function(){console.log("SchrrrrummmKaputtt")};
+Jedi.prototype = {
+theForce : "strong", power : "much",
+lightSaber : function(){console.log("SchrrrrummmKaputtt")}
 };
 kai = new Jedi("Mohandis");
-kai.merkmal = "gutaussehend"; //true for kai only, not for other Jedi
+kai.power = "muchmore";
+kai.merkmal = "gutaussehend"; //applys to kai, only - not for any other Jedi
 </pre>
 <h3>Inheritance</h3>
 <p>Simply add the Base class as prototype to the derived Class:<br>
@@ -159,6 +163,8 @@ d = new Derive(); // Copies Derive.prototype to d instance's hidden prototype sl
 In a browser, the Global Object is the window-object <br>
 Global Variables are properties of the Global Object <br>
 Global Functions are methods of the Global Object <br>
+The methods of window depend on the Browser <br>
+One important property of "window" is the "document" object
 
 </p>
 
@@ -175,6 +181,7 @@ Global Functions are methods of the Global Object <br>
 </pre>
 Or, externel javaScript Files can be used:<br>
 <pre>&#60;script type="text/javascript" src="hello.js">&#60;/script></pre>
+Inside the external JavaScript File, no &#60;script type="text/javascript">...&#60;/scrip> Tags are needed, only pure JavaScript.
 </p>
 <p>Scrips should be included at the end of the html-body because: The page will be displayed faster, and the DOM will be complete</p>
 
