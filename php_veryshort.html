@@ -1,13 +1,17 @@
 <html>
 <head>
 <title>PHP Very Short</title>
-<style>h2 {color:red} </style>
+<style>
+h2 {color:red}
+pre {background:#c6fbb9; width: 70em}
+ </style>
 </head>
 <body>
 
-<p>This is a VERY short description of PHP </p>
+<p>This is a VERY short description of PHP <br>
+It describes PHP 5.3 only!.</p>
 
-<h3>Configuration</h3>
+<h2>Configuration</h2>
 <p>
 Three different Configuration files affect the execution of PHP:
 <ul>
@@ -15,7 +19,22 @@ Three different Configuration files affect the execution of PHP:
 <li>httpd.conf    - of course, only for Apache, but thats the rule
 <li>.htaccess
 </ul>
-
+</p>
+<h3>httpd.conf</h3>
+<p>In a window XAMPP installation: xampp\apache\conf\httpd.conf <br>
+Options for PHP, that might be found in httpd.conf: </p>
+<table>
+<tr><td>php_value</td><td></td></tr>
+<tr><td>php_flag</td><td></td></tr>
+<tr><td>php_admin_value</td><td></td></tr>
+<tr><td>php_admin_flag</td><td></td></tr>
+</table>
+<p>If the .htaccess file should be evaluated, we must tell it Apache: 
+<pre>
+&#60;Directory "D:/XAMPP/xampp/htdocs">  //the directory, where apache finds the HTML pages
+  AllowOverride All
+&#60;/Directory>
+</pre>
 </p>
 
 <h3>Embedding in HTML</h3>
@@ -24,49 +43,137 @@ There are different ways to embedd PHP in HTML:
 <pre>
 &#60;? some-PHP-code ?><br>
 &#60;? php some-PHP-code  ?><br>
-&#60;% php some-PHP-code  %>  //depending on configuration <br>
+&#60;% php some-PHP-code  %>  //depending on configuration, might be disabled <br>
+&#60;%= php some-PHP-code  %>  //depending on configuration, might be disabled <br>
 &#60;script language="php"> some-php-code &#60;/script> <br>
-&#60;?php include "myexternelphpfile.inc" ?>
+&#60;?php include("myexternelphpfile.inc") ?>   //no errors if file not exists <br>
+&#60;?php include_once("myexternelphpfile.inc") ?> //file included once, even if called multiple times <br> 
+&#60;?php require("myexternelphpfile.inc") ?>  //error if file not exists, good for libs <br>
+&#60;?php require_once("myexternelphpfile.inc") ?> 
 </pre>
 
 </p>
 
 <h2>Basics</h2>
-<p>PHP is a script Language, but can be compiled on-the-fly and cached by the PHP-engine</p>
+<p>PHP is a script Language, but mostly, it is compiled on-the-fly to a bytecode (possibly cached by the share memory by the PHP-engine) and then executed e.g. by the Zend Engine </p>
 Basic syntax is similar to c/c++ <br>
-except: variable declaration</p>
+except: variable declaration (no type), class constructors ...<br>
+goto statements aber possible, but restricted and require that the target label be in the same file and context.</p>
 
 <h3>Case Sensitivity </h3>
-<p>Case sensitive:  <br>
-Not case sensitive:</p>
+<p>Case sensitive: Variable Names <br>
+Not case sensitive: class-names, function-names</p>
 
 <h3>Comments</h3>
 <p> Like c++  "//" and "/* */" can be used, but also #  </p>
-
 
 <h3>Literals</h3>
 <p>
 </p>
 
 <h3>Statement Separators and Blocks ; {} </h3>
-<p>Semikolons ... </p>
+<p>Like c / c ++ </p>
+<p>PHP stataments are terminated by a Semikolons </p>
 <p>Blocks are enclosed in { } like c/c++</p>
 
-<h3>Reserved Words</h3>
-<p> More or less the same as c++, but many of them yet unused. </p>
+<p>Colon Syntax: <br>
+In if-elseif-endif statements, a colon : may replace curley brackets {}</p>
+
+<h3>Reserved Words and Syntax</h3>
+<p> More or less the same as c / c++ </p>
+
+<h3> Namespaces </h3>
+<p>Namespaces are declared by the reserved word "namespace". The first namespace must be the FIRST declaration in a file after the PHP-Tag (Not even a HTML Tag peceeding). <br>
+There might be several namespaces in a single PHP file. <br>
+Namspaces can have a hierarchy. <br>
+the "use" operator is supported.
+<pre>
+&#60;?php
+namespace MyProject\Sub\Level;
+... somePHPcode
+?></pre>
+</p>
 
 <h3>Variables and Arrays</h3>
-<p>:
-<pre></pre>
-Types in arrays ....:
-<pre></pre> 
- </p>
- <p>current type can be detected by....:
- <pre></pre>
- </p>
+<p>Variables start with a $ Symblol<br>
+No need to declare variables, they are created when they are used the first time<br>
+Variables have not type specified<br>
+Variable names are case sensitive<br>
+</p>
+<p>Arrays:<br>
+Arrays ars stored as hash-Tables (key and value), where the types of the key and values can be any mixture of types<br>
+Arrays ca be iterated with a foreach loop: 
+<pre>foreach($myArray as $myKey=>$myValue) {
+  somePHPexpressions
+} </pre>
+</p>
+<p>strings:<br>
+String literals are enclosed by single or double quotes<br>
+If double quotes, variables or escape-sequences are evaluated<br>
+Concatenation of strings is done by . or .= <br>
+The following characters must be escaped by a Backslash: $ \ " <br>
+Strings are Arrays, but to access a single char, use {} instead of [] 
+<pre>
+$mychar = $myString{$i}; 
+$mychar = $myString[$i];
+$myAddress = "MyStrasse 13 ". $ort"; </pre>
+</p>
 
- <h3>Exceptions</h3>
- <p>Exceptions are like c++ using try{} throw() catch(){}?????????</p>
+<h3>Dynamic Variables:</h3>
+<p>
+Used to build a Variable-Name from a variable:
+<pre>
+$myVar = "var1";
+$$myVar = "Welt";  //means $var1 = "Welt"
+echo "Hallo $var1";
+</pre>
+But if a variable-name is build from a array field, curly brackets must be used: <br>
+${$myary[$i]} = "new World";
+</p>
+
+<h3>Scope of Variables</h3>
+<p>Functions can access lokal variables, only. <br>
+If a global variable should be used, there are 2 possibilities:
+<ul>
+<li>Use the keyword global before using the variable: "global $globVar; echo $globVar;"
+<li>Use the $GLOBALS Array: "echo $GLOBALS['globVar'];"
+</ul> 
+</p>
+
+<h3>Automaticly created global variables</h3>
+<p>For every HTTP Request, PHP cerates a number of Global Variables: </p> 
+<table>
+<tr><td>$_GET</td><td></td></tr>
+<tr><td>$_POST</td><td>Normally field of forms</td></tr>
+<tr><td>$_COOKIE</td><td>Array, where the cookiename is the index</td></tr>
+<tr><td>$_REQUEST</td><td></td></tr>
+<tr><td>$_SERVER</td><td>Normally, DOCUMENT_ROOT and ip-address/ports of - see phpinfo()</td></tr>
+<tr><td>$_ENV</td><td>Environment of the Webserver</td></tr>
+<tr><td>$_FILES</td><td>2-Dim-Array holding infos about all uploaded files</td></tr>
+</table>
+
+<h3>Constants</h3>
+<p>Constants can be created in 2 ways: <br>
+Using function "define(name, value);" which allows expressions as value, too! <br>
+since PHP 5.3, using the keywork "const name value;", but no expressions allowed! <br>
+A constant should not start with a $ (but define gives no error message if it does !!) 
+<pre>
+define("yourConstVar", dirname(__FILE__));
+const myConstVar = 55;
+</pre> </p>
+
+<h3>Magical Constants</h3>
+<p>Magical constants are provided by PHP or extensions. <br>
+They are not real constants, but set at compile time, or when the PHP Script is started.<br>
+They are NOT case sensitive.<br>
+The most important are: <br>
+__FILE__  __LINE__ __DIR__ __FUNCTION__ __NAMESPACE__ __CLASS__
+</p>
+
+<h3>Exceptions</h3>
+<p>Exceptions are like c++ using try{} throw() catch(){}<br>
+To process uncaught exceptions, set an exception handler:<br>
+string set_exception_handler ( callback $exception_handler )</p>
  
 <h2>Expressions</h2>
 
@@ -74,13 +181,129 @@ Types in arrays ....:
 <p>== and != compare the value <br>
 === and !== compare value and datatype </p>
 
+<h3>Branching</h3>
+<p>same like in c: <br>
+if-elseif-else<br>
+expression ? doneIfTrue : doneIfFalse <br>
+switch-case-break-default</p>
+
+<h3>Loops</h3>
+<p>same like in c (break and continue can be used): <br>
+for(;condition;) {} <br>
+while(condition) {} <br>
+do {} while(condition) <br>
+foreach (arrayName as fieldVar) {} //only for arrays !
+</p>
+
 <h2>Functions</h2>
+<p> There are very many build in functions in PHP, and user-defined functions must not have names of build-in functions</p>
 <h3>General:</h3>
 <ul>
-<li></li>
+<li>Function names are NOT case sensitive</li>
+<li>No need for prototypes</li>
+<li>Functions can be used anytime, even bevor the definition</li>
+<li>Functions can be called by value, or by reference - putting a & before the paramter name!
 </ul>
+<h3>Important Functions and Keywords</h3>
+<p>
+print() and echo can be used to put strings into the HTML docutment. But: print() is slower <br>
+
 
 <h3>Function definitions and Parameters </h3>
+<pre>function myFunction($para1 = 'kaisFunc') {
+    return 'kai';
+}
+echo 'My name is ' . myFunction() . '!';</pre>
+
+<h2>Objects and Classes</h2>
+<p>
+Its much like c++, but not the same: <br>
+<ul>
+<li>There is no virtual table feature in the engine</li>
+<li>Classes can have public (default), protected and private variables and functions</li>
+<li>Abstract classes and final classes are supported </li>
+<li>Unlike c++, Objects of the same type have access to each other's private and protected members</li>
+<li>Objects are referenced using handles (and not by value) </li>
+<li>Constructors are always named: void __construct([ mixed $args [, $... ]])</li>
+<li>Parent-class constructors are not called automatically, they must be called within the constructor</li>
+<li>Destructors are always named void __destruct(void)</li>
+<li>A "final" class cannot be subclassed: "final class MyBaseClass {}" </li>
+<li>A "final" method cannot be overwritten in subclasses: "final public function myFunk() " </li> 
+<li>members are accessed using the -> operator, but without the $ of the member-variable!</li>
+<li>Objects are copied using the reserved word clone</li>
+<li>If a __clone() method has been defined for the class, it will be used instead of the engines clone function!</li>
+<li>Objects implementing ArrayAccess can be used with array syntax</li>
+<li>Objects implementing Iterator or IteratorAggregate can be used with a foreach loop</li>
+</ul>
+<pre>
+class Person {
+   public $first = "Peter";
+   public $last;
+   public function __construct($f, $l = '') { //Constructor - With optional parameter
+       $this->first = $f;
+       $this->last = $l;
+   }
+}  //here is NO semicolon !!   
+$Ich = new Person("Kai");  //$Ich is not a real pointer, but a handle
+echo "$Ich->first   $Ich->last";   
+</pre>
+</p>
+
+<h3>Interfaces</h3>
+<ul>
+<li>Interfaces are declared using "interface"</li>
+<li>Interfaces might contain pure virtual methods and constants.</li>
+<li>Interfaces are declared using the "implements" keyword </li>
+<li>interfaces might be subclassed with other interfaces</li>
+<li>A class, or an interface, may have several interfaces, using the keyword "implements" </li>
+</ul>
+<pre>
+interface mySubTemplate extends myBaseTemplate
+{
+  public function setVariable($name, $var);
+}
+</pre>
+
+<h2>Database Access</h2>
+<p>Database access is done by build-in Functions.<br>
+There are build in functions for many different databases.<br>
+Most important are connections to MySQL:</p>
+
+<h4>resource connection mysql_connect( hostname:port:path2port, username, new, flags)</h4>
+<p> All parameters are optional <br>
+If connection is NULL, the connection failed. </p>
+<h4>resource result mysql_query(sqlString, resource connection, resultModel)</h4>
+<p>connection and resultModel are optional <br>
+result can be NULL, and is used in functions evaluating the result, like:</p>
+<h4>mixed mysql_result(resource result, row, field)</h4>
+<p>field is optional, default = 0, field can be field-number (int) or field-name (string). <br>
+Return type depends on data type of column. </p>
+<p>
+Example:
+<pre>
+$myConnection = mysql_connect( "localhost", "root");
+if (!$myConnection) {
+    echo "No connection to MySQL Server<br>";
+}
+else if (!mysql_select_db("test")) {
+  echo "Database not available: test <br>";
+} 
+else {
+    $myResult =  mysql_query ("SELECT * FROM dummytable ", $myConnection);
+    if ($myResult) {
+        $rowCnt = mysql_num_rows($myResult);
+        $colCnt = mysql_num_fields($myResult);
+        echo "<br>Rows: ".$rowCnt." Columns: ".$colCnt."<br>";
+        for ($r = 0; $r < $rowCnt; $r++) {
+            echo "<br>Row: ".$r." ";
+            for ($c =0; $c < $colCnt; ++$c) {
+                echo  mysql_result($myResult, $r, $c); echo "  ";
+            }
+        }
+   }
+   else {echo "No Result";}
+}
+</pre>
 
 </body>
 </html>
